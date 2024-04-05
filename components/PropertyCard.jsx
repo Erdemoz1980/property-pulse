@@ -3,13 +3,12 @@ import Link from 'next/link';
 import { FaBed, FaBath, FaRulerCombined, FaMoneyBill, FaMapMarker } from 'react-icons/fa';
 
 const PropertyCard = ({ property }) => {
-  const {_id, images, type, name, rates, beds, baths, square_feet, location:{street, city, state, zipCode } } = property;
+  const {_id, images, type, name, rates, beds, baths, square_feet, location:{street, city, province, postalCode } } = property;
 
   const getRateDisplay = {
     monthly: `${rates.monthly?.toLocaleString()}/mo`,
     weekly: `${rates.weekly?.toLocaleString()}/wk`,
     nightly: `${rates.nightly?.toLocaleString()}/night`,
-    
   }
   
   return (
@@ -60,7 +59,7 @@ const PropertyCard = ({ property }) => {
       <div className="flex flex-col lg:flex-row justify-between mb-4">
         <div className="flex align-middle gap-2 mb-4 lg:mb-0">
           <FaMapMarker className="text-orange-700 mt-1" />
-            <span className="text-orange-700">{city}, {state} </span>
+            <span className="text-orange-700">{city}, {province} {postalCode} </span>
         </div>
         <Link
           href={`/properties/${_id}`}
