@@ -9,7 +9,7 @@ const Spinner = ({ loading }) => {
   return (
     <ClipLoader
       color='#3b82f6'
-      laoding={loading}
+      loading={loading}
       cssOverride={override}
       size={150}
       aria-label='Loading Spinner'
