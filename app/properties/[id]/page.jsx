@@ -7,6 +7,7 @@ import PropertyHeaderImage from "@/components/PropertyHeaderImage";
 import PropertyDetails from "@/components/PropertyDeatils";
 import { FaArrowLeft } from 'react-icons/fa';
 import Spinner from "@/components/Spinner";
+import PropertyImages from "@/components/PropertyImages";
 
 
 const PropertyPage = () => {
@@ -148,7 +149,8 @@ const PropertyPage = () => {
           </aside>
         </div>
       </div>
-    </section>
+        </section>
+        <PropertyImages images={property.images} />
     </>)
   }
   </>
