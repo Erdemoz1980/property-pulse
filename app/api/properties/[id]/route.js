@@ -59,3 +59,77 @@ export const DELETE = async (request, {params}) => {
     })
   }
 };
+
+//PUT /api/properties/:id
+export const PUT = async (request, { params }) => {
+  try {
+    await connectDB();
+    
+    const sessionUser = await getSessionUser();
+    if (!sessionUser || !sessionUser.userId) {
+      return new Response('User ID is required', {
+        status:401
+      })
+    }
+    
+    const propertyId = params.id; 
+    const { userId } = sessionUser;
+    const formData = await request.formData();
+
+    //Get property to update
+    const existingProperty = await Property.findById(propertyId);
+    if (!existingProperty) {
+      return new Response('Property does not exist', {
+        status:404
+      })
+    };
+
+    //Verify ownership
+    if (existingProperty.owner.toString() !== userId) {
+      return new Response('Unauthorized', {
+        status:401
+      })
+    };
+
+    //Build propertyData object for databse
+    const propertyData = {
+      type: formData.get('type'),
+      name: formData.get('name'),
+      description: formData.get('description'),
+      location: {
+        street:formData.get('location.street'),
+        city: formData.get('location.city'),
+        province: formData.get('location.province'),
+        postalCode:formData.get('location.postalCode')
+      },
+      beds:formData.get('beds'),
+      baths: formData.get('baths'),
+      square_feet: formData.get('square_feet'),
+      amenities: formData.getAll('amenities'),
+      rates: {
+        nightly: formData.get('rates.nightly'),
+        weekly: formData.get('rates.weekly'),
+        monthly: formData.get('rates.monthly'),
+      },
+      seller_info: {
+        name:formData.get('seller_info.name'),
+        email:formData.get('seller_info.email'),
+        phone:formData.get('seller_info.phone'),
+      }
+    }
+
+    //Update property in database
+    const updatedProperty = await Property.findByIdAndUpdate(propertyId, propertyData);
+
+    return new Response(JSON.stringify(updatedProperty), {
+      status: 200
+    });
+
+
+  } catch (error) {
+    console.log(error)
+    return new Response('Failed to update property',{status:500})
+  }
+}
+
+  

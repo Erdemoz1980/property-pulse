@@ -9,7 +9,7 @@ async function fetchProperties() {
   
 
     const res = await fetch(`${apiDomain}/properties`, {
-     cache:'no-cache'
+     cache:'no-store'
    })
 
     if (!res.ok) {
