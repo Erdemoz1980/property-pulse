@@ -1,49 +1,41 @@
-import connectDB from '@/config/database';
 import Property from '@/models/Property';
+import connectDB from '@/config/database';
 
-
-//GET /api/search
 export const GET = async (request) => {
   try {
     await connectDB();
-
     const { searchParams } = new URL(request.url);
+
     const location = searchParams.get('location');
-    const propertyType = searchParams.get('propertyType');
-
     const locationPattern = new RegExp(location, 'i');
-     
-    //Match location pattern against database fields
-    let query = {
-      $or: [
-        { name: locationPattern },
-        { description: locationPattern },
-        { 'location.street': locationPattern },
-        { 'location.city': locationPattern },
-        { 'location.province': locationPattern },
-        { 'location.postalCode': locationPattern }
-      ]
-    };
 
-    //Only check for property if it's not 'All'
-    if (propertyType && propertyType !== 'All') {
-      const typePattern = new RegExp(propertyType, 'i');
-      query.type = typePattern
+    //Construct the mongoose query object
+    const query = {
+      $or: [
+        { name: { $regex: locationPattern } },
+        { description: { $regex: locationPattern } },
+        { 'location.city': { $regex: locationPattern } },
+        { 'location.street': { $regex: locationPattern } },
+        { 'location.province': { $regex: locationPattern } }
+      ]
+    }
+    
+    //Check if type is NOT 'All'
+    const type = searchParams.get('propertyType')
+    
+    if (type && type !== 'All') {
+      const typePattern = new RegExp(type, 'i');
+      query.type = {$regex:typePattern}
     }
 
-    //Get the search results
-    const properties = await Property.find(query)
-  
-
-    return new Response(JSON.stringify(properties),
-    {status:200})
-
+    const properties = await Property.find(query);
+ 
+    return new Response(JSON.stringify(properties),{status:200})
     
-  } catch (err) {
-    console.log(err);
-    return new Response('Something went wrong',{
+  } catch (error) {
+    console.error(error)
+    return new Response('Something went wrong', {
       status:500
     })
-    
   }
 }

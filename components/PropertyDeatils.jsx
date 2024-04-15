@@ -9,7 +9,7 @@ import {
 
 
 const PropertyDetails = ({ property }) => {
-  const { type, name, location: { city, province, postalCode }, rates, description, beds, baths, square_feet, amenities } = property;
+  const { type, name, location: { city, street,  province, postalCode }, rates, description, beds, baths, square_feet, amenities } = property;
   
   return (
     <main>
@@ -23,7 +23,7 @@ const PropertyDetails = ({ property }) => {
         >
           <FaMapMarker className='text-lg text-orange-700 mr-2' />
           <p className="text-orange-700">
-            {city}, {province}, {postalCode}
+            {city}, {street}, {province}, {postalCode}
           </p>
         </div>
 

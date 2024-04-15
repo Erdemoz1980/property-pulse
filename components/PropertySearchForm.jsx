@@ -12,13 +12,12 @@ const PropertySearchForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (location === '' && propertyType === 'All') {
-     router.push('/properties')
+      router.push('/properties')
     } else {
       const query = `?location=${location}&propertyType=${propertyType}`;
-      router.push(query)
-   }
-
- }
+      router.push(`/properties/search-results/${query}`)
+    }
+  };  
  
   return (
     <form
